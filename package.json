@@ -1,7 +1,7 @@
 {
   "name": "tre-console-messages",
   "version": "1.0.0",
-  "description": "",
+  "description": "show console messages reflected back to a webapp by bay of plenty",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,11 +10,16 @@
     "type": "git",
     "url": "git+https://github.com/regular/tre-console-messages.git"
   },
-  "keywords": [],
+  "keywords": ["tre", "bay-of-plenty", "console"],
   "author": "Jan Bölsche <jan@lagomorph.de> (https://regular.codes/)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/regular/tre-console-messages/issues"
   },
-  "homepage": "https://github.com/regular/tre-console-messages#readme"
+  "homepage": "https://github.com/regular/tre-console-messages#readme",
+  "dependencies": {
+    "escape-goat": "^3.0.0",
+    "module-styles": "^1.0.0",
+    "mutant": "^3.29.0"
+  }
 }
