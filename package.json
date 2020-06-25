@@ -10,7 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/regular/tre-console-messages.git"
   },
-  "keywords": ["tre", "bay-of-plenty", "console"],
+  "keywords": [
+    "tre",
+    "bay-of-plenty",
+    "console"
+  ],
   "author": "Jan Bölsche <jan@lagomorph.de> (https://regular.codes/)",
   "license": "MIT",
   "bugs": {
