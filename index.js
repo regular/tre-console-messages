@@ -11,7 +11,21 @@ module.exports = function(opts) {
 
   const sprintf = Sprintf({
     parseCSS,
-    stringify: (x=>htmlEscape(JSON.stringify(x))),
+    stringify: (x=>{
+      if (x == undefined) return 'undefined'
+      if (x == null) return 'null'
+      if (typeof x =='number') return `${x}`
+      if (typeof x =='string') return `${x}`
+      if (typeof x =='boolean') return `${x}`
+      const type = typeof x
+      let s = `[${type}]`
+      try {
+        s = htmlEscape(JSON.stringify(x, null, 2))
+      } catch(e) {
+        s = x.toString()
+      }
+      return `<details class="${type}"><summary>${type}</summary><pre>${s}</pre></details>`
+    }),
     escape: htmlEscape
   })
 

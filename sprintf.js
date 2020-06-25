@@ -4,17 +4,14 @@
 const sprintf_cache = Object.create(null)
 
 const re = {
-    not_string: /[^s]/,
-    not_bool: /[^t]/,
     not_type: /[^T]/,
     not_primitive: /[^v]/,
     number: /[diefg]/,
     numeric_arg: /[bdiefguxX]/,
     json: /[oO]/,
-    not_json: /[^oO]/,
     text: /^[^\x25]+/,
     modulo: /^\x25{2}/,
-    placeholder: /^\x25(?:([1-9]\d*)\$|\(([^)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-gijostTuvxX])/,
+    placeholder: /^\x25(?:([1-9]\d*)\$|\(([^)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-gioOstTuvxX])/,
     key: /^([a-z_][a-z_\d]*)/i,
     key_access: /^\.([a-z_][a-z_\d]*)/i,
     index_access: /^\[(\d+)\]/,
@@ -26,8 +23,6 @@ module.exports = function(opts) {
   const stringify = opts.stringify || JSON.stringify
   const parseCSS = opts.parseCSS || (x=>x)
   const escape = opts.escape || (x=>x)
-  
-
   return sprintf
 
   function sprintf(key) {
@@ -88,8 +83,10 @@ module.exports = function(opts) {
             arg = parseInt(arg, 10)
             break
           case 'o':
-          case 'O':
             arg = stringify(arg, null, ph.width ? parseInt(ph.width) : 0)
+            break
+          case 'O':
+            arg = stringify(arg, null, ph.width ? parseInt(ph.width) : 0, true)
             break
           case 'e':
             arg = ph.precision ? parseFloat(arg).toExponential(ph.precision) : parseFloat(arg).toExponential()
@@ -216,7 +213,7 @@ module.exports = function(opts) {
         )
       }
       else {
-        throw new SyntaxError('[sprintf] unexpected placeholder')
+        throw new SyntaxError('[sprintf] unexpected placeholder: ' + _fmt)
       }
       _fmt = _fmt.substring(match[0].length)
     }
