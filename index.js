@@ -40,6 +40,7 @@ module.exports = function(opts) {
       const n = (counts[type] || 0) + 1
       counts[type] = n
       countsObs.set(counts)
+      if (!values.length) values.push(text)
       let s = sprintf.apply(null, values)
       s = s.replace(/(?!^)<span/g, '</span><span')
       if (/<span/.test(s)) s += '</span>'
@@ -88,6 +89,10 @@ styles(`
     content: '⚠';
     color: yellow;
   }
+  .tre-console-messages .counts .network-error::before {
+    content: 'network';
+    color: purple;
+  }
   .tre-console-messages .counts .log {
     display: none;
   }
@@ -108,6 +113,11 @@ styles(`
     background-color: #5f1818de;
     color: #efee;
     border-color: red;
+  }
+  .tre-console-messages .console-message.network-error {
+    background-color: #5f1818de;
+    color: #efee;
+    border-color: purple;
   }
   .tre-console-messages .console-message.info {
     background-color: #0c0c9cd1;
