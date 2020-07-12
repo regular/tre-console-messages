@@ -1,6 +1,6 @@
 {
   "name": "tre-console-messages",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "show console messages reflected back to a webapp by bay of plenty",
   "main": "index.js",
   "scripts": {
