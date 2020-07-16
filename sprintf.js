@@ -213,7 +213,10 @@ module.exports = function(opts) {
         )
       }
       else {
-        throw new SyntaxError('[sprintf] unexpected placeholder: ' + _fmt)
+        //throw new SyntaxError('[sprintf] unexpected placeholder: ' + _fmt)
+        parse_tree.push('%')
+        _fmt = _fmt.substr(1)
+        continue;
       }
       _fmt = _fmt.substring(match[0].length)
     }
