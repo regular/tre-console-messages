@@ -11,21 +11,7 @@ module.exports = function(opts) {
 
   const sprintf = Sprintf({
     parseCSS,
-    stringify: (x=>{
-      if (x == undefined) return 'undefined'
-      if (x == null) return 'null'
-      if (typeof x =='number') return `${x}`
-      if (typeof x =='string') return `${x}`
-      if (typeof x =='boolean') return `${x}`
-      const type = typeof x
-      let s = `[${type}]`
-      try {
-        s = htmlEscape(JSON.stringify(x, null, 2))
-      } catch(e) {
-        s = x.toString()
-      }
-      return `<details class="${type}"><summary>${type}</summary><pre>${s}</pre></details>`
-    }),
+    stringify,
     escape: htmlEscape
   })
 
@@ -41,10 +27,18 @@ module.exports = function(opts) {
       counts[type] = n
       countsObs.set(counts)
       if (!values.length) values.push(text)
-      let s = sprintf.apply(null, values)
-      s = s.replace(/(?!^)<span/g, '</span><span')
-      if (/<span/.test(s)) s += '</span>'
-      container.appendChild(h(`.console-message.${type}`, {innerHTML: s}))
+      let s, err
+      try {
+        s = sprintf.apply(null, values)
+        s = s.replace(/(?!^)<span/g, '</span><span')
+        if (/<span/.test(s)) s += '</span>'
+      } catch(e) {
+        err = e
+        //const m = values.map(stringify).join(' ')
+        m = htmlEscape(values[0])
+        s = `error formatting console message: "${m}": ${htmlEscape(err.message)}\n` + location 
+      }
+      container.appendChild(h(`.console-message.${err ? 'error' : type}`, {innerHTML: s}))
     })
 
     return h('details.tre-console-messages', [
@@ -55,15 +49,33 @@ module.exports = function(opts) {
     ])
 
     function renderCounts(counts) {
-      return Object.keys(counts).map(type=>{
+      const ret = Object.keys(counts).map(type=>{
         return h(`span.${type}.count`, counts[type])
       })
+      ret.unshift(h(`.text.${Object.keys(counts).join('.')}`))
+      return ret
     }
   }
 }
 
 function parseCSS(css) {
   return `<span style="${htmlEscape(css)}">`
+}
+
+function stringify(x) {
+  if (x == undefined) return 'undefined'
+  if (x == null) return 'null'
+  if (typeof x =='number') return `${x}`
+  if (typeof x =='string') return `${x}`
+  if (typeof x =='boolean') return `${x}`
+  const type = typeof x
+  let s = `[${type}]`
+  try {
+    s = htmlEscape(JSON.stringify(x, null, 2))
+  } catch(e) {
+    s = x.toString()
+  }
+  return `<details class="${type}"><summary>${type}</summary><pre>${s}</pre></details>`
 }
 
 styles(`
@@ -77,23 +89,23 @@ styles(`
   .tre-console-messages .counts span::before {
     padding: 3px;
   }
-  .tre-console-messages .counts .error::before {
+  .tre-console-messages .error.count::before {
     content: '✖';
     color: red;
   }
-  .tre-console-messages .counts .info::before {
+  .tre-console-messages .info.count::before {
     content: 'ℹ';
     color: blue;
   }
-  .tre-console-messages .counts .warning::before {
+  .tre-console-messages .warning.count::before {
     content: '⚠';
     color: yellow;
   }
-  .tre-console-messages .counts .network-error::before {
+  .tre-console-messages .network-error.count::before {
     content: 'network';
     color: purple;
   }
-  .tre-console-messages .counts .log {
+  .tre-console-messages .log.count {
     display: none;
   }
   .tre-console-messages .console-message {
