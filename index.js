@@ -35,8 +35,8 @@ module.exports = function(opts) {
       } catch(e) {
         err = e
         //const m = values.map(stringify).join(' ')
-        m = htmlEscape(values[0])
-        s = `error formatting console message: "${m}": ${htmlEscape(err.message)}\n` + location 
+        m = htmlEscape(values.join())
+        s = `error formatting console message: "${m}": ${htmlEscape(err.message + '\n' + err.stack)}\n` + location 
       }
       container.appendChild(h(`.console-message.${err ? 'error' : type}`, {innerHTML: s}))
     })
